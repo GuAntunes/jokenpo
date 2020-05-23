@@ -58,20 +58,20 @@ public class JogadaService {
 
 		if (jogadas != null && jogadas.size() > 1) {
 
-			
 			List<Jogada> ganhadores = calculoFatorialParaEncontrarGanhadores(jogadas);
-			
+
 			return defineResultado(ganhadores);
 		}
 
 		throw new JogadaException("É necessário ter pelo menos duas jogadas criadas para jogar jokenpo!");
 
 	}
-	
-	//Realiza calculo fatorial, para checar todas as combinações possíveis, com o mínimo de tentativas e filtrar os ganhadores
-	private List<Jogada> calculoFatorialParaEncontrarGanhadores(List<Jogada> jogadas){
+
+	// Realiza calculo fatorial, para checar todas as combinações possíveis, com o
+	// mínimo de tentativas e filtrar os ganhadores
+	private List<Jogada> calculoFatorialParaEncontrarGanhadores(List<Jogada> jogadas) {
 		List<Jogada> ganhadores = new ArrayList<>();
-		
+
 		for (int x = 0; x < jogadas.size(); x++) {
 			for (int y = x + 1; y < jogadas.size(); y++) {
 				jogadas.get(x).comparar(jogadas.get(y));
@@ -80,39 +80,40 @@ public class JogadaService {
 				ganhadores.add(jogadas.get(x));
 			}
 		}
-		
+
 		return ganhadores;
 	}
-	
+
 	private Resultado defineResultado(List<Jogada> ganhadores) {
+
 		
 		Resultado r = new Resultado();
-		
+
 		if (ganhadores.size() == 0) {
 			r.setResultado("Nenhum dos jogadores ganhou a partida!");
 		} else if (ganhadores.size() == 1) {
 			r.setResultado("O jogador " + ganhadores.get(0).getJogador().getNome() + " ganhou a partida!");
 		} else if (ganhadores.size() > 1) {
-			StringBuilder resultado = new StringBuilder("Houve um empate entre os jogadores: ");
+			String resultado = "Houve um empate entre os jogadores: ";
 			for (Jogada jogada : ganhadores) {
-				resultado.append("\n");
-				resultado.append(jogada.getJogador().getNome());
+				resultado += "\n" + jogada.getJogador().getNome();
 			}
+			r.setResultado(resultado.toString());
 		}
-		
+
 		return r;
 	}
-	
-	
-	public Jogada findJogadaByCodigoJogador(int codigo, List<Jogada> jogadas) {
 
-		return jogadas.stream().filter(j -> j.getJogador().getCodigo().equals(codigo)).findAny().orElse(null);
+	public Jogada findJogadaByCodigoJogador(Integer codigo, List<Jogada> jogadas) {
+			return jogadas != null ? jogadas.stream()
+			.filter(j -> j.getJogador() != null && j.getJogador().getCodigo() != null && j.getJogador().getCodigo().equals(codigo)).findAny().orElse(null) : null;
+		 
 
 	}
 
 	public void delete(Integer id, List<Jogada> jogadas) {
 		Jogada j = this.findJogadaByCodigoJogador(id, jogadas);
-		if(j != null) {
+		if (j != null) {
 			jogadas.remove(j);
 		}
 	}

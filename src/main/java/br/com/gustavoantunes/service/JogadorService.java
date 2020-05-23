@@ -24,14 +24,17 @@ public class JogadorService {
 
 	public static void delete(Integer codigo) {
 		Jogador j = JogadorService.findOne(codigo);
-		if(j != null) {
+		if (j != null) {
 			jogadores.remove(j);
 		}
-		
+
 	}
 
 	public static Jogador save(Jogador jogador) {
-		jogadores.add(jogador);
+		if (jogador != null)
+			jogadores.add(jogador);
 		return jogador;
 	}
+
+	
 }
