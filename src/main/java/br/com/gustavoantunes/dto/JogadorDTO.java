@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 
 import br.com.gustavoantunes.model.Jogador;
 
-public class JogadorDTO implements Serializable{
+public class JogadorDTO implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private Integer codigo;
 
@@ -18,7 +20,7 @@ public class JogadorDTO implements Serializable{
 		this.codigo = codigo;
 		this.nome = nome;
 	}
-	
+
 	public JogadorDTO() {
 		// TODO Auto-generated constructor stub
 	}
@@ -34,6 +36,14 @@ public class JogadorDTO implements Serializable{
 
 	public String getNome() {
 		return nome;
+	}
+
+	public void setCodigo(Integer codigo) {
+		this.codigo = codigo;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 
 	public Jogador toJogador() {

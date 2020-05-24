@@ -99,7 +99,7 @@ public class JogadaServiceTest {
 		
 		returnValue = (Resultado) method.invoke(this.jogadaService, jogadas);
 		
-		String resp = "Houve um empate entre os jogadores: \nJogador 1\nJogador 2";
+		String resp = "Houve um empate entre os jogadores: Jogador 1;Jogador 2;";
 		assertNotNull(returnValue);
 		assertNotNull(returnValue.getResultado());
 		assertEquals(resp, returnValue.getResultado());

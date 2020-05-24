@@ -96,7 +96,7 @@ public class JogadaService {
 		} else if (ganhadores.size() > 1) {
 			String resultado = "Houve um empate entre os jogadores: ";
 			for (Jogada jogada : ganhadores) {
-				resultado += "\n" + jogada.getJogador().getNome();
+				resultado +=  jogada.getJogador().getNome() + ";";
 			}
 			r.setResultado(resultado.toString());
 		}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8">
+<title>JokenPo</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+
+<body>
+	<div th:if="${resultado != null}">
+		<div class="alert alert-info">[[${resultado}]]</div>
+	</div>
+	<div class="container">
+		<h2>Joken Po</h2>
+		<br /> <br />
+		<div class="row">
+			<div class="col-sm-4">
+				<h4>Cadastrar Jogador</h4>
+				<form th:action="@{/web/jogador}" th:object="${jogador}"
+					method="POST">
+					<div class="form-group">
+						<label for="codigoJogador">Código:</label> <input type="number"
+							required="true" th:value="${jogador.codigo}" class="form-control"
+							id="codigoJogador" aria-describedby="123" name="codigo"
+							placeholder="123">
+					</div>
+					<div class="form-group">
+						<label for="nomeJogador">Nome:</label> <input type="text"
+							th:value="${jogador.nome}" name="nome" class="form-control"
+							id="nomeJogador" aria-describedby="Jogador 01"
+							placeholder="Jogador 01">
+					</div>
+					<button type="submit" class="btn btn-primary">Cadastrar</button>
+				</form>
+			</div>
+			<div class="col-sm-4">
+				<h4>Lista de Jogadores</h4>
+				<div class="card" style="width: 18rem;">
+					<ul class="list-group list-group-flush" th:each="j : ${jogadores}">
+						<li class="list-group-item">Código: [[${j.codigo}]] - Nome:
+							[[${j.nome}]]</li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<h4>Excluir Jogador</h4>
+				<form id="formExcluirJogador" th:action="@{/web/jogador/deletar}"
+					th:object="${jogador}" onsubmit="return excluirJogador()"
+					method="POST">
+					<div class="form-group">
+						<label for="codigoJogadorExcluir">Código:</label> <input
+							type="number" required="true" class="form-control"
+							id="codigoJogadorExcluir" aria-describedby="123" name="codigo"
+							placeholder="123">
+					</div>
+					<button type="submit" class="btn btn-danger">Deletar</button>
+				</form>
+			</div>
+		</div>
+		<div class="row mt-3">
+			<div class="col-sm-4 ">
+				<h4>Cadastrar Jogada</h4>
+				<form th:action="@{/web/jogada}" th:object="${jogada}" method="POST">
+					<div class="form-group">
+						<label for="codigoJogada">Código Jogador:</label> <input
+							type="number" required="true" th:value="${jogada.idJogador}"
+							class="form-control" id="idJogador" aria-describedby="123"
+							name="idJogador" placeholder="123">
+					</div>
+
+					<select class="form-control mb-3" id="simbolo" name="simbolo"
+						required="" th:field="${jogada.simbolo}">
+						<option th:value="0">Selecione</option>
+						<option th:value="pedra">Pedra</option>
+						<option th:value="papel">Papel</option>
+						<option th:value="tesoura">Tesoura</option>
+						<option th:value="spock">Spock</option>
+						<option th:value="lagarto">Lagarto</option>
+					</select>
+					<button type="submit" class="btn btn-primary">Cadastrar</button>
+				</form>
+			</div>
+			<div class="col-sm-4">
+				<h4>Lista de Jogadas</h4>
+				<div class="card" style="width: 18rem;">
+					<ul class="list-group list-group-flush" th:each="j : ${jogadas}">
+						<li class="list-group-item">Código Jogador:
+							[[${j.idJogador}]] - Simbolo: [[${j.simbolo}]]</li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<h4>Excluir Jogada</h4>
+				<form id="formExcluirJogada" th:action="@{/web/jogada/deletar}"
+					onsubmit="return excluirJogada()" method="POST">
+					<div class="form-group">
+						<label for="codigoJogadaExcluir">Código Jogador:</label> <input
+							type="number" required="true" class="form-control"
+							id="codigoJogadaExcluir" aria-describedby="123" name="codigo"
+							placeholder="123">
+					</div>
+					<button type="submit" class="btn btn-danger">Deletar</button>
+				</form>
+			</div>
+		</div>
+		<div class="row mt-3">
+			<div class="col-sm-12">
+				<form id="formJogar" th:action="@{/web/jogar}" method="POST">
+					<button type="submit" class="btn btn-warning">Joken-po</button>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript">
+		function excluirJogador() {
+			var codigo = $("#codigoJogadorExcluir").val();
+			if (codigo != "" && codigo > 0) {
+				$("#formExcluirJogador").attr("action",
+						"/web/jogador/deletar/" + codigo);
+				return true;
+			} else {
+				alert("Digite um código do jogador para excluir")
+				return false;
+			}
+		}
+
+		function excluirJogada() {
+			var codigo = $("#codigoJogadaExcluir").val();
+			if (codigo != "" && codigo > 0) {
+				$("#formExcluirJogada").attr("action",
+						"/web/jogada/deletar/" + codigo);
+				return true;
+			} else {
+				alert("Digite um código do jogador para excluir")
+				return false;
+			}
+		}
+	</script>
+</body>
+</html>
