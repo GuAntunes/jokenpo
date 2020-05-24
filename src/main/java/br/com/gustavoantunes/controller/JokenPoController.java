@@ -42,7 +42,7 @@ public class JokenPoController {
 
 		return response.getBody();
 	}
-	
+
 	private JogadaDTO[] buscarJogadas() {
 
 		RestTemplate restTemplate = new RestTemplate();
@@ -52,26 +52,26 @@ public class JokenPoController {
 		return response.getBody();
 	}
 
-	private void excluirJogador(final Integer codigo) {
+	private void excluirJogador(final Integer codigo) throws Exception {
 		// create an instance of RestTemplate
 		RestTemplate restTemplate = new RestTemplate();
 
 		restTemplate.delete(url + "/jogador/" + codigo);
 
 	}
-	
-	private void excluirJogada(final Integer codigo) {
+
+	private void excluirJogada(final Integer codigo) throws Exception {
 		// create an instance of RestTemplate
 		RestTemplate restTemplate = new RestTemplate();
 
 		restTemplate.delete(url + "/jogada/" + codigo);
 
 	}
-	
-	private Resultado jogar() {
+
+	private Resultado jogar() throws Exception {
 		RestTemplate restTemplate = new RestTemplate();
-		
-		ResponseEntity<Resultado> response = restTemplate.postForEntity(url + "/jogada/jogar",null,  Resultado.class);
+
+		ResponseEntity<Resultado> response = restTemplate.postForEntity(url + "/jogada/jogar", null, Resultado.class);
 
 		return response.getBody();
 	}
@@ -94,8 +94,11 @@ public class JokenPoController {
 		map.put("codigo", jogadorDTO.getCodigo().toString());
 		map.put("nome", jogadorDTO.getNome());
 
-		// send POST request
-		ResponseEntity<JogadorDTO> response = restTemplate.postForEntity(url + "/jogador", map, JogadorDTO.class);
+		try {
+			restTemplate.postForEntity(url + "/jogador", map, String.class);
+		} catch (Exception e) {
+			model.addAttribute("msgError", e.getMessage());
+		}
 
 		carregaInformacoes(model);
 
@@ -105,13 +108,17 @@ public class JokenPoController {
 	@PostMapping("/web/jogador/deletar/{id}")
 	public ModelAndView deletarJogador(Model model, @PathVariable Integer id) {
 
-		this.excluirJogador(id);
-		
+		try {
+			this.excluirJogador(id);
+		} catch (Exception e) {
+			model.addAttribute("msgError", e.getMessage());
+		}
+
 		carregaInformacoes(model);
-		
+
 		return new ModelAndView("index", model.asMap());
 	}
-	
+
 	@PostMapping("/web/jogada")
 	public ModelAndView salvarJogada(Model model, JogadaDTO jogadaDTO) {
 
@@ -122,9 +129,11 @@ public class JokenPoController {
 		map.put("idJogador", jogadaDTO.getIdJogador().toString());
 		map.put("simbolo", jogadaDTO.getSimbolo());
 
-		// send POST request
-		ResponseEntity<JogadaDTO> response = restTemplate.postForEntity(url + "/jogada", map, JogadaDTO.class);
-		
+		try {
+			restTemplate.postForEntity(url + "/jogada", map, JogadaDTO.class);
+		} catch (Exception e) {
+			model.addAttribute("msgError", e.getMessage());
+		}
 		carregaInformacoes(model);
 
 		return new ModelAndView("index", model.asMap());
@@ -133,23 +142,30 @@ public class JokenPoController {
 	@PostMapping("/web/jogada/deletar/{id}")
 	public ModelAndView deletarJogada(Model model, @PathVariable Integer id) {
 
-		this.excluirJogada(id);
-		
+		try {
+			this.excluirJogada(id);
+		} catch (Exception e) {
+			model.addAttribute("msgError", e.getMessage());
+		}
 		carregaInformacoes(model);
-		
+
 		return new ModelAndView("index", model.asMap());
 	}
-	
+
 	@PostMapping("/web/jogar")
 	public ModelAndView jogar(Model model) {
 
-		Resultado r = this.jogar();
-		
-		model.addAttribute("resultado", r.getResultado());
-		
+		try {
+			Resultado r = this.jogar();
+
+			model.addAttribute("resultado", r.getResultado());
+		} catch (Exception e) {
+			model.addAttribute("msgError", e.getMessage());
+		}
+
 		carregaInformacoes(model);
-		
+
 		return new ModelAndView("index", model.asMap());
 	}
-	
+
 }

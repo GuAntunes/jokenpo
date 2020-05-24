@@ -249,14 +249,14 @@ public class JogadaServiceTest {
 		SimboloFactory factory = new SimboloFactory();
 		
 		Jogador j1 = new Jogador(123, "Jogador 1");
-		Jogador j2 = new Jogador(321, "Jogador 2");
 		Jogada jogada1 = new Jogada(j1, factory.createSimbolo("papel"));
 		
 		List<Jogada> jogadas = new ArrayList<>();
 
 		jogadas.add(jogada1);
 		
-		boolean resp = this.jogadaService.registrarJogada(jogada1, jogadas);
+		this.jogadaService.registrarJogada(jogada1, jogadas);
+		
 	}
 	
 	@Test(expected = JogadaException.class)

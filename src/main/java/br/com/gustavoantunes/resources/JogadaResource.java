@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +34,7 @@ public class JogadaResource {
 
 		try {
 			Jogada jogada = jogadaService.toJogada(jogadaDTO);
-
+			
 			jogadaService.registrarJogada(jogada, jogadas);
 
 			return ResponseEntity.ok(new JogadaDTO(jogada));
@@ -93,7 +94,7 @@ public class JogadaResource {
 				jogadaService.delete(id, jogadas);
 				return ResponseEntity.ok().build();
 			}
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Jogador não encontrado!");
 		}
 
 		return ResponseEntity.badRequest().build();

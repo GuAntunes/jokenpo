@@ -2,6 +2,7 @@ package br.com.gustavoantunes.resources;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.gustavoantunes.dto.JogadorDTO;
+import br.com.gustavoantunes.exception.JogadaException;
 import br.com.gustavoantunes.model.Jogador;
 import br.com.gustavoantunes.service.JogadorService;
 
@@ -44,12 +46,16 @@ public class JogadorResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<JogadorDTO> save(@RequestBody JogadorDTO jogadorDTO) {
+	public ResponseEntity<?> save(@RequestBody JogadorDTO jogadorDTO) {
 		if (jogadorDTO != null && jogadorDTO.getCodigo() != null && jogadorDTO.getCodigo() > 0
 				&& jogadorDTO.getNome() != null && !jogadorDTO.getNome().trim().isEmpty()) {
 
 			Jogador jogador = jogadorDTO.toJogador();
-			jogador = JogadorService.save(jogador);
+			try {
+				jogador = JogadorService.save(jogador);
+			} catch (JogadaException e) {
+				return ResponseEntity.badRequest().body(e.getMessage());
+			}
 			return ResponseEntity.ok(new JogadorDTO(jogador));
 		}
 
@@ -65,10 +71,10 @@ public class JogadorResource {
 				JogadorService.delete(id);
 				return ResponseEntity.ok().build();
 			}
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Jogador não encontrado!");
 		}
 
-		return ResponseEntity.badRequest().build();
+		return ResponseEntity.badRequest().body("Campos Inválidos!");
 	}
 
 }
