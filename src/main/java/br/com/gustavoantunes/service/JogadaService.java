@@ -21,7 +21,8 @@ public class JogadaService {
 
 		SimboloFactory simboloFactory = new SimboloFactory();
 
-		if (jogadaDTO != null && jogadaDTO.getIdJogador() > 0 && jogadaDTO.getSimbolo() != null) {
+		if (jogadaDTO != null && jogadaDTO.getSimbolo() != null && jogadaDTO.getIdJogador() != null && 
+				jogadaDTO.getIdJogador() > 0 && jogadaDTO.getSimbolo() != null) {
 			Jogador j = JogadorService.findOne(jogadaDTO.getIdJogador());
 			if (j != null) {
 				Simbolo simbolo = simboloFactory.createSimbolo(jogadaDTO.getSimbolo());
@@ -37,7 +38,7 @@ public class JogadaService {
 	}
 
 	public boolean registrarJogada(Jogada jogada, List<Jogada> jogadas) throws JogadaException {
-		if (!verificaSeJogadorTemJogada(jogada, jogadas)) {
+		if (jogada!= null && jogadas != null && !verificaSeJogadorTemJogada(jogada, jogadas)) {
 			jogadas.add(jogada);
 			return true;
 		}
@@ -46,9 +47,11 @@ public class JogadaService {
 
 	private boolean verificaSeJogadorTemJogada(Jogada jogada, List<Jogada> jogadas) {
 
-		for (Jogada j : jogadas) {
-			if (j.getJogador().getCodigo().equals(jogada.getJogador().getCodigo())) {
-				return true;
+		if (jogada != null && jogadas != null) {
+			for (Jogada j : jogadas) {
+				if (j.getJogador() != null && j.getJogador().getCodigo().equals(jogada.getJogador().getCodigo())) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -72,21 +75,23 @@ public class JogadaService {
 	private List<Jogada> calculoFatorialParaEncontrarGanhadores(List<Jogada> jogadas) {
 		List<Jogada> ganhadores = new ArrayList<>();
 
-		for (int x = 0; x < jogadas.size(); x++) {
-			for (int y = x + 1; y < jogadas.size(); y++) {
-				jogadas.get(x).comparar(jogadas.get(y));
-			}
-			if (jogadas.get(x).getStatus().equals(StatusVencedor.GANHOU)) {
-				ganhadores.add(jogadas.get(x));
-			}
-		}
+		if (jogadas != null) {
 
+			for (int x = 0; x < jogadas.size(); x++) {
+				for (int y = x + 1; y < jogadas.size(); y++) {
+					jogadas.get(x).comparar(jogadas.get(y));
+				}
+				if (jogadas.get(x).getStatus().equals(StatusVencedor.GANHOU)) {
+					ganhadores.add(jogadas.get(x));
+				}
+			}
+
+		}
 		return ganhadores;
 	}
 
 	private Resultado defineResultado(List<Jogada> ganhadores) {
 
-		
 		Resultado r = new Resultado();
 
 		if (ganhadores.size() == 0) {
@@ -96,7 +101,7 @@ public class JogadaService {
 		} else if (ganhadores.size() > 1) {
 			String resultado = "Houve um empate entre os jogadores: ";
 			for (Jogada jogada : ganhadores) {
-				resultado +=  jogada.getJogador().getNome() + ";";
+				resultado += jogada.getJogador().getNome() + ";";
 			}
 			r.setResultado(resultado.toString());
 		}
@@ -105,9 +110,10 @@ public class JogadaService {
 	}
 
 	public Jogada findJogadaByCodigoJogador(Integer codigo, List<Jogada> jogadas) {
-			return jogadas != null ? jogadas.stream()
-			.filter(j -> j.getJogador() != null && j.getJogador().getCodigo() != null && j.getJogador().getCodigo().equals(codigo)).findAny().orElse(null) : null;
-		 
+		return jogadas != null
+				? jogadas.stream().filter(j -> j.getJogador() != null && j.getJogador().getCodigo() != null
+						&& j.getJogador().getCodigo().equals(codigo)).findAny().orElse(null)
+				: null;
 
 	}
 
